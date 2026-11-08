@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<health-permissions>
+    <health-permission name="android.permission.health.READ_STEPS" />
+</health-permissions>
+

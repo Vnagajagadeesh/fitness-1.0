@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">FITNESS 1.0</string>
+    <string name="app_subtitle">THE BEGINNING</string>
+    <string name="brand_initials">JD</string>
+    <string name="health_connect_rationale">FITNESS 1.0 uses Health Connect to automatically track your daily step count from your device sensor and display progress toward your 10,000 steps goal.</string>
+</resources>
+

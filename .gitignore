@@ -1,0 +1,37 @@
+# Built-in Gradle & Android
+*.iml
+.gradle/
+/local.properties
+/.idea/
+.DS_Store
+/build/
+/captures/
+.externalNativeBuild/
+.cxx/
+
+# Build artifacts and binaries (kept locally, not committed to git)
+*.apk
+*.aab
+output-metadata.json
+app/build/
+
+# Keystore & Signing secrets
+*.jks
+*.keystore
+*.key
+signing.properties
+
+# Environment variables & local secrets
+.env
+*.env
+*.secret
+
+# Zero-Admin Local Toolchains (portable JDK, Android SDK, Git, GH)
+/tools/
+/android-sdk/
+
+# OS & Editor generated files
+Thumbs.db
+desktop.ini
+*.swp
+*~
