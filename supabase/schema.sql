@@ -47,3 +47,4 @@ CREATE TRIGGER update_season10_progress_updated_at
     BEFORE UPDATE ON public.season10_progress
     FOR EACH ROW
     EXECUTE PROCEDURE update_updated_at_column();
+

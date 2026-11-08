@@ -61,3 +61,4 @@ class FastingCalculationTest {
         assertEquals("AUTOPHAGY", getStage(36f))
     }
 }
+
