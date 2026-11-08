@@ -11,6 +11,10 @@
 Brand Initials: **JD**  
 Optimized Target Device: **POCO X7 Pro (Xiaomi HyperOS / Android 14+)**
 
+<p align="center">
+  <img src="docs/images/fitness-showcase-card.svg" alt="FITNESS 1.0 Showcase" width="100%" />
+</p>
+
 ---
 
 ## ⚡ Overview
