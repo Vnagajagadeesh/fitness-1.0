@@ -22,9 +22,25 @@ android {
         }
     }
 
+    signingConfigs {
+        create("release") {
+            val keyFile = rootProject.file("fitness-release-key.jks")
+            if (keyFile.exists()) {
+                storeFile = keyFile
+                storePassword = System.getenv("FITNESS_KEYSTORE_PASSWORD") ?: "Fitness2026Release!"
+                keyAlias = "fitness"
+                keyPassword = System.getenv("FITNESS_KEY_PASSWORD") ?: "Fitness2026Release!"
+            }
+        }
+    }
+
     buildTypes {
         release {
             isMinifyEnabled = false
+            val keyFile = rootProject.file("fitness-release-key.jks")
+            if (keyFile.exists()) {
+                signingConfig = signingConfigs.getByName("release")
+            }
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
