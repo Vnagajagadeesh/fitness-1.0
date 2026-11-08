@@ -34,6 +34,16 @@ It is designed for ruthless self-discipline, body composition tracking, and dail
 - **Accents**: Neon Electric Blue (`#00E5FF`), Neon Purple (`#9D4EDD`), Cyan (`#00F5D4`), Magenta (`#FF007F`), Amber (`#FFB703`)
 - **Components**: Glassmorphism cards with glowing neon borders, interactive Canvas charts, and custom JD branding vectors.
 
+## 📱 Live Application Screenshots (POCO X7 Pro)
+
+<p align="center">
+  <img src="docs/images/screenshot-dashboard.jpg" alt="Dashboard" width="31%" />
+  &nbsp;
+  <img src="docs/images/screenshot-habits.jpg" alt="Habits Checklist" width="31%" />
+  &nbsp;
+  <img src="docs/images/screenshot-steps.jpg" alt="Health Connect Steps" width="31%" />
+</p>
+
 ---
 
 ## 🏛️ System Architecture
