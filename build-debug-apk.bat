@@ -6,9 +6,18 @@ echo   FITNESS 1.0 - Building Native Android Debug APK
 echo ========================================================
 echo.
 
-set JAVA_HOME=%~dp0tools\jdk-17\jdk-17.0.12+7
-set ANDROID_HOME=%~dp0android-sdk
-set Path=%JAVA_HOME%\bin;%ANDROID_HOME%\platform-tools;%Path%
+if exist "%~dp0tools\jdk-17\jdk-17.0.12+7" (
+    set "JAVA_HOME=%~dp0tools\jdk-17\jdk-17.0.12+7"
+) else (
+    set "JAVA_HOME=D:\FITNESS\tools\jdk-17\jdk-17.0.12+7"
+)
+
+if exist "%~dp0android-sdk" (
+    set "ANDROID_HOME=%~dp0android-sdk"
+) else (
+    set "ANDROID_HOME=D:\FITNESS\android-sdk"
+)
+set "Path=%JAVA_HOME%\bin;%ANDROID_HOME%\platform-tools;%Path%"
 
 call gradlew.bat assembleDebug
 if %ERRORLEVEL% EQU 0 (

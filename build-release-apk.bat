@@ -4,8 +4,18 @@ echo ========================================================
 echo   FITNESS 1.0 - Signed Release APK Builder
 echo ========================================================
 
-set "JAVA_HOME=%~dp0tools\jdk-17\jdk-17.0.12+7"
-set "PATH=%JAVA_HOME%\bin;%PATH%"
+if exist "%~dp0tools\jdk-17\jdk-17.0.12+7" (
+    set "JAVA_HOME=%~dp0tools\jdk-17\jdk-17.0.12+7"
+) else (
+    set "JAVA_HOME=D:\FITNESS\tools\jdk-17\jdk-17.0.12+7"
+)
+
+if exist "%~dp0android-sdk" (
+    set "ANDROID_HOME=%~dp0android-sdk"
+) else (
+    set "ANDROID_HOME=D:\FITNESS\android-sdk"
+)
+set "PATH=%JAVA_HOME%\bin;%ANDROID_HOME%\platform-tools;%PATH%"
 
 echo Building Production Release APK...
 call "%~dp0gradlew.bat" assembleRelease
