@@ -24,6 +24,9 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.Lock
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.Home
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
@@ -130,11 +133,20 @@ fun JDLogoBadge(
 @Composable
 fun HolographicButton(
     text: String,
-    onClick: () -> Unit,
     modifier: Modifier = Modifier,
     icon: ImageVector? = null,
-    enabled: Boolean = true
+    gradient: List<Color>? = null,
+    enabled: Boolean = true,
+    onClick: () -> Unit
 ) {
+    val bgBrush = if (!enabled) {
+        Brush.linearGradient(listOf(DarkNavySurface, DarkNavySurface))
+    } else if (gradient != null) {
+        Brush.linearGradient(gradient)
+    } else {
+        HolographicButtonGradient
+    }
+
     Button(
         onClick = onClick,
         enabled = enabled,
@@ -146,7 +158,7 @@ fun HolographicButton(
         contentPadding = PaddingValues(horizontal = 20.dp, vertical = 14.dp),
         modifier = modifier
             .clip(RoundedCornerShape(14.dp))
-            .background(if (enabled) HolographicButtonGradient else Brush.linearGradient(listOf(DarkNavySurface, DarkNavySurface)))
+            .background(bgBrush)
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
@@ -172,10 +184,29 @@ fun HolographicButton(
 }
 
 @Composable
+fun HolographicButton(
+    text: String,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+    icon: ImageVector? = null,
+    enabled: Boolean = true
+) {
+    HolographicButton(
+        text = text,
+        modifier = modifier,
+        icon = icon,
+        gradient = null,
+        enabled = enabled,
+        onClick = onClick
+    )
+}
+
+@Composable
 fun NeonProgressBar(
     progress: Float, // 0.0 to 1.0
     modifier: Modifier = Modifier,
-    height: Dp = 8.dp
+    height: Dp = 8.dp,
+    activeColor: Color? = null
 ) {
     val animatedProgress by animateFloatAsState(
         targetValue = progress.coerceIn(0f, 1f),
@@ -190,12 +221,18 @@ fun NeonProgressBar(
             .clip(RoundedCornerShape(height / 2))
             .background(Color(0xFF16203B))
     ) {
+        val fillBrush = if (activeColor != null) {
+            Brush.horizontalGradient(listOf(activeColor, activeColor))
+        } else {
+            HolographicGradient
+        }
+
         Box(
             modifier = Modifier
                 .fillMaxWidth(animatedProgress)
                 .height(height)
                 .clip(RoundedCornerShape(height / 2))
-                .background(HolographicGradient)
+                .background(fillBrush)
         )
     }
 }
@@ -321,3 +358,77 @@ fun MilestoneCard(
         }
     }
 }
+
+@Composable
+fun SubScreenHeader(
+    title: String,
+    subtitle: String = "",
+    onBack: (() -> Unit)? = null,
+    onHome: (() -> Unit)? = null,
+    actionIcon: ImageVector? = null,
+    actionDescription: String? = null,
+    onAction: (() -> Unit)? = null
+) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 8.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.SpaceBetween
+    ) {
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier.weight(1f)
+        ) {
+            if (onBack != null) {
+                IconButton(onClick = onBack) {
+                    Icon(
+                        imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                        contentDescription = "Back",
+                        tint = NeonElectricBlue
+                    )
+                }
+                Spacer(modifier = Modifier.width(4.dp))
+            }
+
+            Column {
+                Text(
+                    text = title,
+                    fontSize = 20.sp,
+                    fontWeight = FontWeight.Black,
+                    color = TextWhite,
+                    letterSpacing = 0.5.sp
+                )
+                if (subtitle.isNotBlank()) {
+                    Text(
+                        text = subtitle,
+                        fontSize = 12.sp,
+                        color = TextMuted
+                    )
+                }
+            }
+        }
+
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            if (actionIcon != null && onAction != null) {
+                IconButton(onClick = onAction) {
+                    Icon(
+                        imageVector = actionIcon,
+                        contentDescription = actionDescription,
+                        tint = NeonCyan
+                    )
+                }
+            }
+            if (onHome != null) {
+                IconButton(onClick = onHome) {
+                    Icon(
+                        imageVector = Icons.Default.Home,
+                        contentDescription = "Home",
+                        tint = NeonElectricBlue
+                    )
+                }
+            }
+        }
+    }
+}
+

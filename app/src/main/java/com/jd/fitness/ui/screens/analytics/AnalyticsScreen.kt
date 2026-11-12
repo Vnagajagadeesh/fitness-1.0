@@ -37,9 +37,13 @@ import com.jd.fitness.ui.theme.TextSubtle
 import com.jd.fitness.ui.theme.TextWhite
 import java.util.Locale
 
+import com.jd.fitness.ui.components.SubScreenHeader
+
 @Composable
 fun AnalyticsScreen(
-    viewModel: AnalyticsViewModel
+    viewModel: AnalyticsViewModel,
+    onBack: () -> Unit = {},
+    onHome: () -> Unit = {}
 ) {
     val state by viewModel.uiState.collectAsState()
     val streaks = state.streakInfo
@@ -52,18 +56,12 @@ fun AnalyticsScreen(
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
         item {
-            Spacer(modifier = Modifier.height(16.dp))
-            Text(
-                text = "ANALYTICS & METRICS",
-                fontSize = 22.sp,
-                fontWeight = FontWeight.Black,
-                color = TextWhite,
-                letterSpacing = 1.sp
-            )
-            Text(
-                text = "Stored database calculations and discipline statistics",
-                fontSize = 12.sp,
-                color = TextMuted
+            Spacer(modifier = Modifier.height(12.dp))
+            SubScreenHeader(
+                title = "ANALYTICS & METRICS",
+                subtitle = "Stored database calculations and discipline statistics",
+                onBack = onBack,
+                onHome = onHome
             )
         }
 

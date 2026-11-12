@@ -69,9 +69,13 @@ import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 
+import com.jd.fitness.ui.components.SubScreenHeader
+
 @Composable
 fun SettingsScreen(
-    viewModel: SettingsViewModel
+    viewModel: SettingsViewModel,
+    onBack: () -> Unit = {},
+    onHome: () -> Unit = {}
 ) {
     val state by viewModel.uiState.collectAsState()
     val context = LocalContext.current
@@ -92,18 +96,12 @@ fun SettingsScreen(
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
         item {
-            Spacer(modifier = Modifier.height(16.dp))
-            Text(
-                text = "COMMAND SETTINGS",
-                fontSize = 22.sp,
-                fontWeight = FontWeight.Black,
-                color = TextWhite,
-                letterSpacing = 1.sp
-            )
-            Text(
-                text = "Configuration, reminders, cloud backup, and data migration",
-                fontSize = 12.sp,
-                color = TextMuted
+            Spacer(modifier = Modifier.height(12.dp))
+            SubScreenHeader(
+                title = "SETTINGS & DATA",
+                subtitle = "FITNESS 1.2 — JD EDITION  •  Configuration & Cloud Sync",
+                onBack = onBack,
+                onHome = onHome
             )
         }
 
@@ -308,6 +306,29 @@ fun SettingsScreen(
                     }
                     ReminderRow("Step Goal Check", state.preferences.stepGoalReminder) {
                         viewModel.updateReminderTime("step_goal", it, context)
+                    }
+
+                    Spacer(modifier = Modifier.height(10.dp))
+                    Text(text = "NOTIFICATION INTELLIGENCE (FITNESS 1.2)", fontSize = 11.sp, fontWeight = FontWeight.Bold, color = NeonCyan)
+                    Spacer(modifier = Modifier.height(4.dp))
+
+                    ReminderRow("Morning Motivation (${if (state.preferences.isMorningMotivationEnabled) "On" else "Off"})", state.preferences.morningMotivationTime) {
+                        viewModel.updateReminderTime("morning_motivation", it, context)
+                    }
+                    ReminderRow("Evening Motivation (${if (state.preferences.isEveningMotivationEnabled) "On" else "Off"})", state.preferences.eveningMotivationTime) {
+                        viewModel.updateReminderTime("evening_motivation", it, context)
+                    }
+                    ReminderRow("Journal Reflection", state.preferences.journalReminderTime) {
+                        viewModel.updateReminderTime("journal_reminder", it, context)
+                    }
+                    ReminderRow("Recovery Check-in", state.preferences.recoveryReminderTime) {
+                        viewModel.updateReminderTime("recovery_reminder", it, context)
+                    }
+                    ReminderRow("Quiet Hours Start", state.preferences.quietHoursStart) {
+                        viewModel.updateReminderTime("quiet_start", it, context)
+                    }
+                    ReminderRow("Quiet Hours End", state.preferences.quietHoursEnd) {
+                        viewModel.updateReminderTime("quiet_end", it, context)
                     }
                 }
             }

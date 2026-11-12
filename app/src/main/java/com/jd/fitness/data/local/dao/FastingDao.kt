@@ -8,6 +8,7 @@ import androidx.room.Query
 import androidx.room.Update
 import com.jd.fitness.data.local.entity.FastingEntity
 import com.jd.fitness.data.local.entity.FastingMealEntity
+import com.jd.fitness.data.local.entity.FastingScheduleEntity
 import kotlinx.coroutines.flow.Flow
 
 @Dao
@@ -19,14 +20,23 @@ interface FastingDao {
     @Query("SELECT * FROM fasting_sessions WHERE state = 'ACTIVE' ORDER BY startTime DESC LIMIT 1")
     suspend fun getActiveSessionOnce(): FastingEntity?
 
+    @Query("SELECT * FROM fasting_sessions WHERE id = :id LIMIT 1")
+    suspend fun getSessionById(id: Long): FastingEntity?
+
     @Query("SELECT * FROM fasting_sessions ORDER BY startTime DESC")
     fun getAllSessions(): Flow<List<FastingEntity>>
 
     @Query("SELECT * FROM fasting_sessions ORDER BY startTime DESC")
     suspend fun getAllSessionsOnce(): List<FastingEntity>
 
+    @Query("SELECT * FROM fasting_sessions WHERE state != 'ACTIVE' ORDER BY startTime DESC LIMIT :limit")
+    fun getRecentCompletedSessions(limit: Int): Flow<List<FastingEntity>>
+
     @Query("SELECT * FROM fasting_sessions WHERE startTime >= :startMillis AND startTime <= :endMillis ORDER BY startTime DESC")
     fun getSessionsBetween(startMillis: Long, endMillis: Long): Flow<List<FastingEntity>>
+
+    @Query("SELECT * FROM fasting_sessions WHERE startTime >= :startMillis AND startTime <= :endMillis ORDER BY startTime DESC")
+    suspend fun getSessionsBetweenOnce(startMillis: Long, endMillis: Long): List<FastingEntity>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertSession(session: FastingEntity): Long
@@ -39,6 +49,28 @@ interface FastingDao {
 
     @Delete
     suspend fun deleteSession(session: FastingEntity)
+
+    @Query("DELETE FROM fasting_sessions WHERE id = :id")
+    suspend fun deleteSessionById(id: Long)
+
+    // --- Schedules ---
+    @Query("SELECT * FROM fasting_schedules ORDER BY fastingHours ASC")
+    fun getAllSchedules(): Flow<List<FastingScheduleEntity>>
+
+    @Query("SELECT * FROM fasting_schedules ORDER BY fastingHours ASC")
+    suspend fun getAllSchedulesOnce(): List<FastingScheduleEntity>
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertSchedule(schedule: FastingScheduleEntity): Long
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertSchedules(schedules: List<FastingScheduleEntity>): List<Long>
+
+    @Update
+    suspend fun updateSchedule(schedule: FastingScheduleEntity)
+
+    @Delete
+    suspend fun deleteSchedule(schedule: FastingScheduleEntity)
 
     // --- Meals ---
     @Query("SELECT * FROM fasting_meals WHERE sessionId = :sessionId ORDER BY mealTime ASC")
@@ -59,4 +91,3 @@ interface FastingDao {
     @Query("SELECT * FROM fasting_meals")
     suspend fun getAllMeals(): List<FastingMealEntity>
 }
-

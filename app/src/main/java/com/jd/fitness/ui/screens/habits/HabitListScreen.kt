@@ -58,10 +58,14 @@ import com.jd.fitness.ui.theme.TextMuted
 import com.jd.fitness.ui.theme.TextSubtle
 import com.jd.fitness.ui.theme.TextWhite
 
+import com.jd.fitness.ui.components.SubScreenHeader
+
 @Composable
 fun HabitListScreen(
     viewModel: HabitViewModel,
-    onNavigateToSkincare: () -> Unit
+    onNavigateToSkincare: () -> Unit,
+    onBack: () -> Unit = {},
+    onHome: () -> Unit = {}
 ) {
     val state by viewModel.uiState.collectAsState()
     val filteredItems = state.habitItems.filter { item ->
@@ -89,6 +93,15 @@ fun HabitListScreen(
                 .padding(horizontal = 16.dp),
             verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
+            item {
+                Spacer(modifier = Modifier.height(8.dp))
+                SubScreenHeader(
+                    title = "HABIT DISCIPLINE",
+                    subtitle = "13 Foundation Pillars & Daily Check-in",
+                    onBack = onBack,
+                    onHome = onHome
+                )
+            }
             item {
                 Spacer(modifier = Modifier.height(8.dp))
                 // --- DATE SELECTOR BAR ---
@@ -251,7 +264,6 @@ fun HabitListScreen(
                                         HabitCategory.NUTRITION -> NeonElectricBlue
                                         HabitCategory.MINDSET -> NeonPurple
                                         HabitCategory.CUSTOM -> TextMuted
-                                        else -> TextMuted
                                     }
                                 )
                                 if (habit.isSkincareSpecific) {

@@ -1,8 +1,8 @@
 @echo off
-title FITNESS 1.0 - Build Debug APK
+title FITNESS 1.2 - Build Debug APK
 cd /d "%~dp0"
 echo ========================================================
-echo   FITNESS 1.0 - Building Native Android Debug APK
+echo   FITNESS 1.2 - Building Native Android Debug APK
 echo ========================================================
 echo.
 
@@ -21,15 +21,14 @@ set "Path=%JAVA_HOME%\bin;%ANDROID_HOME%\platform-tools;%Path%"
 
 call gradlew.bat assembleDebug
 if %ERRORLEVEL% EQU 0 (
-    copy /Y "%~dp0app\build\outputs\apk\debug\app-debug.apk" "%~dp0FITNESS-1.0-debug.apk" >nul
+    copy /Y "%~dp0app\build\outputs\apk\debug\app-debug.apk" "%~dp0FITNESS-1.2-debug.apk" >nul
     echo.
     echo ========================================================
     echo   BUILD SUCCESSFUL!
-    echo   APK Generated: %~dp0FITNESS-1.0-debug.apk
+    echo   APK Generated: %~dp0FITNESS-1.2-debug.apk
     echo ========================================================
 ) else (
     echo.
     echo [ERROR] Build failed. Please review errors above.
 )
 pause
-

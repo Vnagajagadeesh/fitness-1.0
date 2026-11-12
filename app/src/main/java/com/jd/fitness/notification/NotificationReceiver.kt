@@ -10,6 +10,13 @@ import android.os.Build
 import androidx.core.app.NotificationCompat
 import com.jd.fitness.MainActivity
 import com.jd.fitness.R
+import com.jd.fitness.data.preferences.UserPreferencesRepository
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.launch
+import java.time.LocalTime
+import java.time.format.DateTimeFormatter
 
 class NotificationReceiver : BroadcastReceiver() {
 
@@ -21,19 +28,53 @@ class NotificationReceiver : BroadcastReceiver() {
         }
 
         val reminderId = intent.getIntExtra(EXTRA_REMINDER_ID, 0)
-        val title = intent.getStringExtra(EXTRA_TITLE) ?: "FITNESS 1.0"
+        val title = intent.getStringExtra(EXTRA_TITLE) ?: "FITNESS 1.2"
         val message = intent.getStringExtra(EXTRA_MESSAGE) ?: "Time for your daily discipline check-in!"
 
+        CoroutineScope(Dispatchers.IO).launch {
+            val prefs = UserPreferencesRepository(context).preferencesFlow.first()
+            if (!prefs.isNotificationsEnabled) return@launch
+
+            // Check Quiet Hours
+            if (prefs.isQuietHoursEnabled) {
+                if (isInQuietHours(prefs.quietHoursStart, prefs.quietHoursEnd)) {
+                    return@launch // Suppress notification during quiet hours
+                }
+            }
+
+            postNotification(context, reminderId, title, message)
+        }
+    }
+
+    private fun isInQuietHours(startStr: String, endStr: String): Boolean {
+        return try {
+            val formatter = DateTimeFormatter.ofPattern("HH:mm")
+            val start = LocalTime.parse(startStr, formatter)
+            val end = LocalTime.parse(endStr, formatter)
+            val now = LocalTime.now()
+
+            if (start.isBefore(end)) {
+                now.isAfter(start) && now.isBefore(end)
+            } else {
+                // Overnight quiet hours, e.g. 23:00 to 06:30
+                now.isAfter(start) || now.isBefore(end)
+            }
+        } catch (e: Exception) {
+            false
+        }
+    }
+
+    private fun postNotification(context: Context, reminderId: Int, title: String, message: String) {
         val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         val channelId = "fitness_reminders_channel"
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val channel = NotificationChannel(
                 channelId,
-                "Daily Discipline Reminders",
+                "FITNESS 1.2 Reminders",
                 NotificationManager.IMPORTANCE_DEFAULT
             ).apply {
-                description = "Reminders for habits, skincare routines, workout and steps"
+                description = "Daily discipline, motivation, habits, planner, and recovery reminders"
             }
             notificationManager.createNotificationChannel(channel)
         }
@@ -66,4 +107,3 @@ class NotificationReceiver : BroadcastReceiver() {
         const val EXTRA_MESSAGE = "extra_message"
     }
 }
-

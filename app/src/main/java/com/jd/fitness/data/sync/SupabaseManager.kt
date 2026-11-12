@@ -42,9 +42,9 @@ class SupabaseManager(
      */
     suspend fun buildLocalPayload(userId: String): SyncPayload = withContext(Dispatchers.IO) {
         SyncPayload(
-            version = 1,
+            version = 2,
             userId = userId,
-            deviceInfo = "POCO X7 Pro - FITNESS 1.0",
+            deviceInfo = "POCO X7 Pro - FITNESS 1.2",
             updatedAt = System.currentTimeMillis(),
             challenge = database.challengeDao().getChallengeConfigOnce(),
             habits = database.habitDao().getAllHabitsOnce(),
@@ -54,7 +54,15 @@ class SupabaseManager(
             skincareLogs = database.skincareDao().getAllLogs(),
             fastingSessions = database.fastingDao().getAllSessionsOnce(),
             fastingMeals = database.fastingDao().getAllMeals(),
-            stepLogs = database.stepDao().getAllSteps()
+            fastingSchedules = database.fastingDao().getAllSchedulesOnce(),
+            stepLogs = database.stepDao().getAllSteps(),
+            recoveryEntries = database.recoveryDao().getAllRecoveryEntriesOnce(),
+            plannerTasks = database.plannerDao().getAllTasksOnce(),
+            achievementRecords = database.achievementDao().getAllAchievementsOnce(),
+            weeklyReports = database.weeklyReportDao().getAllReportsOnce(),
+            journalEntries = database.journalDao().getAllEntriesOnce(),
+            coachInsights = database.coachDao().getRecentInsights(30).first(),
+            savedMotivation = database.motivationDao().getAllQuotesOnce()
         )
     }
 
@@ -171,8 +179,29 @@ class SupabaseManager(
         if (payload.fastingMeals.isNotEmpty()) {
             database.fastingDao().insertMeals(payload.fastingMeals)
         }
+        if (payload.fastingSchedules.isNotEmpty()) {
+            database.fastingDao().insertSchedules(payload.fastingSchedules)
+        }
         if (payload.stepLogs.isNotEmpty()) {
             database.stepDao().insertOrUpdateSteps(payload.stepLogs)
+        }
+        if (payload.recoveryEntries.isNotEmpty()) {
+            database.recoveryDao().insertAll(payload.recoveryEntries)
+        }
+        if (payload.plannerTasks.isNotEmpty()) {
+            database.plannerDao().insertTasks(payload.plannerTasks)
+        }
+        if (payload.achievementRecords.isNotEmpty()) {
+            payload.achievementRecords.forEach { database.achievementDao().insertOrUpdate(it) }
+        }
+        if (payload.weeklyReports.isNotEmpty()) {
+            database.weeklyReportDao().insertReports(payload.weeklyReports)
+        }
+        if (payload.journalEntries.isNotEmpty()) {
+            database.journalDao().insertEntries(payload.journalEntries)
+        }
+        if (payload.savedMotivation.isNotEmpty()) {
+            database.motivationDao().insertQuotes(payload.savedMotivation)
         }
     }
 }

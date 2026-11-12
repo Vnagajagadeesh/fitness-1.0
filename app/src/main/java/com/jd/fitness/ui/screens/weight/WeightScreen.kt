@@ -60,9 +60,13 @@ import java.time.LocalDate
 import java.util.Date
 import java.util.Locale
 
+import com.jd.fitness.ui.components.SubScreenHeader
+
 @Composable
 fun WeightScreen(
-    viewModel: WeightViewModel
+    viewModel: WeightViewModel,
+    onBack: () -> Unit = {},
+    onHome: () -> Unit = {}
 ) {
     val state by viewModel.uiState.collectAsState()
     val timeFormat = remember { SimpleDateFormat("hh:mm a", Locale.getDefault()) }
@@ -89,18 +93,12 @@ fun WeightScreen(
             verticalArrangement = Arrangement.spacedBy(14.dp)
         ) {
             item {
-                Spacer(modifier = Modifier.height(16.dp))
-                Text(
-                    text = "BODY WEIGHT TRACKER",
-                    fontSize = 22.sp,
-                    fontWeight = FontWeight.Black,
-                    color = TextWhite,
-                    letterSpacing = 1.sp
-                )
-                Text(
-                    text = "Precision kilogram tracking and body composition trend",
-                    fontSize = 12.sp,
-                    color = TextMuted
+                Spacer(modifier = Modifier.height(12.dp))
+                SubScreenHeader(
+                    title = "BODY WEIGHT TRACKER",
+                    subtitle = "Precision kilogram tracking and body composition trend",
+                    onBack = onBack,
+                    onHome = onHome
                 )
             }
 

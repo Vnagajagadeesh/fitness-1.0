@@ -105,6 +105,13 @@ class SettingsViewModel(
         }
     }
 
+    fun toggleNotificationSetting(key: String, enabled: Boolean, context: Context) {
+        viewModelScope.launch {
+            preferencesRepository.toggleNotificationSetting(key, enabled)
+            NotificationScheduler.rescheduleAll(context)
+        }
+    }
+
     fun saveSupabaseConfig(url: String, anonKey: String) {
         viewModelScope.launch {
             preferencesRepository.updateSupabaseConfig(url, anonKey)

@@ -63,9 +63,13 @@ import com.jd.fitness.ui.theme.TextMuted
 import com.jd.fitness.ui.theme.TextSubtle
 import com.jd.fitness.ui.theme.TextWhite
 
+import com.jd.fitness.ui.components.SubScreenHeader
+
 @Composable
 fun SkincareScreen(
-    viewModel: SkincareViewModel
+    viewModel: SkincareViewModel,
+    onBack: () -> Unit = {},
+    onHome: () -> Unit = {}
 ) {
     val state by viewModel.uiState.collectAsState()
 
@@ -77,18 +81,12 @@ fun SkincareScreen(
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
         item {
-            Spacer(modifier = Modifier.height(16.dp))
-            Text(
-                text = "SKINCARE CONSISTENCY",
-                fontSize = 22.sp,
-                fontWeight = FontWeight.Black,
-                color = TextWhite,
-                letterSpacing = 1.sp
-            )
-            Text(
-                text = "Independent morning protection and night cellular recovery",
-                fontSize = 12.sp,
-                color = TextMuted
+            Spacer(modifier = Modifier.height(12.dp))
+            SubScreenHeader(
+                title = "SKINCARE CONSISTENCY",
+                subtitle = "Independent morning protection and night cellular recovery",
+                onBack = onBack,
+                onHome = onHome
             )
         }
 

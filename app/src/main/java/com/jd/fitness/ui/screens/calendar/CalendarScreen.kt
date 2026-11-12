@@ -48,6 +48,7 @@ import com.jd.fitness.ui.theme.NeonGreen
 import com.jd.fitness.ui.theme.NeonPurple
 import com.jd.fitness.ui.theme.TextMuted
 import com.jd.fitness.ui.theme.TextSubtle
+import com.jd.fitness.ui.components.SubScreenHeader
 import com.jd.fitness.ui.theme.TextWhite
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
@@ -55,7 +56,9 @@ import java.util.Locale
 
 @Composable
 fun CalendarScreen(
-    viewModel: CalendarViewModel
+    viewModel: CalendarViewModel,
+    onBack: () -> Unit = {},
+    onHome: () -> Unit = {}
 ) {
     val state by viewModel.uiState.collectAsState()
     val monthTitle = state.currentMonth.format(DateTimeFormatter.ofPattern("MMMM yyyy", Locale.US))
@@ -68,18 +71,12 @@ fun CalendarScreen(
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
         item {
-            Spacer(modifier = Modifier.height(16.dp))
-            Text(
-                text = "CHALLENGE CALENDAR",
-                fontSize = 22.sp,
-                fontWeight = FontWeight.Black,
-                color = TextWhite,
-                letterSpacing = 1.sp
-            )
-            Text(
-                text = "Complete historical log review and retrospective editing",
-                fontSize = 12.sp,
-                color = TextMuted
+            Spacer(modifier = Modifier.height(12.dp))
+            SubScreenHeader(
+                title = "CHALLENGE CALENDAR",
+                subtitle = "Complete historical log review and retrospective editing",
+                onBack = onBack,
+                onHome = onHome
             )
         }
 

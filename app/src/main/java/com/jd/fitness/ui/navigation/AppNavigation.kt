@@ -39,12 +39,26 @@ import com.jd.fitness.ui.screens.calendar.CalendarScreen
 import com.jd.fitness.ui.screens.calendar.CalendarViewModel
 import com.jd.fitness.ui.screens.challenge.ChallengeScreen
 import com.jd.fitness.ui.screens.challenge.ChallengeViewModel
+import com.jd.fitness.ui.screens.coach.CoachScreen
+import com.jd.fitness.ui.screens.coach.CoachViewModel
 import com.jd.fitness.ui.screens.dashboard.DashboardScreen
 import com.jd.fitness.ui.screens.dashboard.DashboardViewModel
 import com.jd.fitness.ui.screens.fasting.FastingScreen
 import com.jd.fitness.ui.screens.fasting.FastingViewModel
 import com.jd.fitness.ui.screens.habits.HabitListScreen
 import com.jd.fitness.ui.screens.habits.HabitViewModel
+import com.jd.fitness.ui.screens.journal.JournalScreen
+import com.jd.fitness.ui.screens.journal.JournalViewModel
+import com.jd.fitness.ui.screens.milestones.MilestonesScreen
+import com.jd.fitness.ui.screens.milestones.MilestonesViewModel
+import com.jd.fitness.ui.screens.motivation.MotivationScreen
+import com.jd.fitness.ui.screens.motivation.MotivationViewModel
+import com.jd.fitness.ui.screens.planner.PlannerScreen
+import com.jd.fitness.ui.screens.planner.PlannerViewModel
+import com.jd.fitness.ui.screens.recovery.RecoveryScreen
+import com.jd.fitness.ui.screens.recovery.RecoveryViewModel
+import com.jd.fitness.ui.screens.reports.WeeklyReportScreen
+import com.jd.fitness.ui.screens.reports.WeeklyReportViewModel
 import com.jd.fitness.ui.screens.settings.SettingsScreen
 import com.jd.fitness.ui.screens.settings.SettingsViewModel
 import com.jd.fitness.ui.screens.skincare.SkincareScreen
@@ -57,9 +71,7 @@ import com.jd.fitness.ui.theme.DarkNavyCard
 import com.jd.fitness.ui.theme.DeepBlackNavy
 import com.jd.fitness.ui.theme.GlassBorder
 import com.jd.fitness.ui.theme.NeonElectricBlue
-import com.jd.fitness.ui.theme.NeonPurple
 import com.jd.fitness.ui.theme.TextMuted
-import com.jd.fitness.ui.theme.TextWhite
 
 @Composable
 fun AppNavigation(
@@ -85,6 +97,30 @@ fun AppNavigation(
     val calendarViewModel = rememberViewModel { CalendarViewModel(repository) }
     val analyticsViewModel = rememberViewModel { AnalyticsViewModel(repository) }
     val settingsViewModel = rememberViewModel { SettingsViewModel(repository, preferencesRepository, supabaseManager, backupManager, legacyMigrationManager) }
+
+    // FITNESS 1.2 ViewModels
+    val recoveryViewModel = rememberViewModel { RecoveryViewModel(repository) }
+    val plannerViewModel = rememberViewModel { PlannerViewModel(repository, preferencesRepository) }
+    val milestonesViewModel = rememberViewModel { MilestonesViewModel(repository) }
+    val weeklyReportViewModel = rememberViewModel { WeeklyReportViewModel(repository) }
+    val journalViewModel = rememberViewModel { JournalViewModel(repository) }
+    val motivationViewModel = rememberViewModel { MotivationViewModel(repository) }
+    val coachViewModel = rememberViewModel { CoachViewModel(repository) }
+
+    val goHome: () -> Unit = {
+        navController.navigate(Screen.Dashboard.route) {
+            popUpTo(Screen.Dashboard.route) {
+                inclusive = false
+            }
+            launchSingleTop = true
+        }
+    }
+
+    val goBack: () -> Unit = {
+        if (!navController.popBackStack()) {
+            goHome()
+        }
+    }
 
     Scaffold(
         bottomBar = {
@@ -125,13 +161,17 @@ fun AppNavigation(
                                 indicatorColor = Color(0x3300E5FF)
                             ),
                             onClick = {
-                                if (currentRoute != screen.route) {
-                                    navController.navigate(screen.route) {
-                                        popUpTo(navController.graph.findStartDestination().id) {
-                                            saveState = true
+                                if (screen.route == Screen.Dashboard.route) {
+                                    goHome()
+                                } else {
+                                    if (currentRoute != screen.route) {
+                                        navController.navigate(screen.route) {
+                                            popUpTo(navController.graph.findStartDestination().id) {
+                                                saveState = true
+                                            }
+                                            launchSingleTop = true
+                                            restoreState = true
                                         }
-                                        launchSingleTop = true
-                                        restoreState = true
                                     }
                                 }
                             }
@@ -158,38 +198,117 @@ fun AppNavigation(
             composable(Screen.Habits.route) {
                 HabitListScreen(
                     viewModel = habitViewModel,
-                    onNavigateToSkincare = { navController.navigate(Screen.Skincare.route) }
+                    onNavigateToSkincare = { navController.navigate(Screen.Skincare.route) },
+                    onBack = goBack,
+                    onHome = goHome
                 )
             }
             composable(Screen.Steps.route) {
                 StepTrackingScreen(
                     viewModel = stepViewModel,
-                    healthConnectManager = healthConnectManager
+                    healthConnectManager = healthConnectManager,
+                    onBack = goBack,
+                    onHome = goHome
                 )
             }
             composable(Screen.Weight.route) {
-                WeightScreen(viewModel = weightViewModel)
+                WeightScreen(
+                    viewModel = weightViewModel,
+                    onBack = goBack,
+                    onHome = goHome
+                )
             }
             composable(Screen.Skincare.route) {
-                SkincareScreen(viewModel = skincareViewModel)
+                SkincareScreen(
+                    viewModel = skincareViewModel,
+                    onBack = goBack,
+                    onHome = goHome
+                )
             }
             composable(Screen.Fasting.route) {
-                FastingScreen(viewModel = fastingViewModel)
+                FastingScreen(
+                    viewModel = fastingViewModel,
+                    onBack = goBack,
+                    onHome = goHome
+                )
             }
             composable(Screen.Challenge.route) {
                 ChallengeScreen(
                     viewModel = challengeViewModel,
-                    onBack = { navController.popBackStack() }
+                    onBack = goBack
                 )
             }
             composable(Screen.Calendar.route) {
-                CalendarScreen(viewModel = calendarViewModel)
+                CalendarScreen(
+                    viewModel = calendarViewModel,
+                    onBack = goBack,
+                    onHome = goHome
+                )
             }
             composable(Screen.Analytics.route) {
-                AnalyticsScreen(viewModel = analyticsViewModel)
+                AnalyticsScreen(
+                    viewModel = analyticsViewModel,
+                    onBack = goBack,
+                    onHome = goHome
+                )
             }
             composable(Screen.Settings.route) {
-                SettingsScreen(viewModel = settingsViewModel)
+                SettingsScreen(
+                    viewModel = settingsViewModel,
+                    onBack = goBack,
+                    onHome = goHome
+                )
+            }
+
+            // --- NEW FITNESS 1.2 MODULE DESTINATIONS ---
+            composable(Screen.Recovery.route) {
+                RecoveryScreen(
+                    viewModel = recoveryViewModel,
+                    onBack = goBack,
+                    onHome = goHome
+                )
+            }
+            composable(Screen.Planner.route) {
+                PlannerScreen(
+                    viewModel = plannerViewModel,
+                    onBack = goBack,
+                    onHome = goHome
+                )
+            }
+            composable(Screen.Achievements.route) {
+                MilestonesScreen(
+                    viewModel = milestonesViewModel,
+                    onBack = goBack,
+                    onHome = goHome
+                )
+            }
+            composable(Screen.WeeklyReports.route) {
+                WeeklyReportScreen(
+                    viewModel = weeklyReportViewModel,
+                    onBack = goBack,
+                    onHome = goHome
+                )
+            }
+            composable(Screen.Journal.route) {
+                JournalScreen(
+                    viewModel = journalViewModel,
+                    onBack = goBack,
+                    onHome = goHome
+                )
+            }
+            composable(Screen.Motivation.route) {
+                MotivationScreen(
+                    viewModel = motivationViewModel,
+                    onBack = goBack,
+                    onHome = goHome
+                )
+            }
+            composable(Screen.Coach.route) {
+                CoachScreen(
+                    viewModel = coachViewModel,
+                    onBack = goBack,
+                    onHome = goHome
+                )
             }
         }
     }
@@ -208,4 +327,3 @@ inline fun <reified T : androidx.lifecycle.ViewModel> rememberViewModel(
         }
     )
 }
-

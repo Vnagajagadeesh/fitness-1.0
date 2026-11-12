@@ -29,6 +29,7 @@ signing.properties
 # Zero-Admin Local Toolchains (portable JDK, Android SDK, Git, GH)
 /tools/
 /android-sdk/
+app/src_backup_fitness_1_0/
 
 # OS & Editor generated files
 Thumbs.db

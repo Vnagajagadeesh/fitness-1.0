@@ -1,8 +1,10 @@
 @echo off
-setlocal
+title FITNESS 1.2 - Build Signed Release APK
+cd /d "%~dp0"
 echo ========================================================
-echo   FITNESS 1.0 - Signed Release APK Builder
+echo   FITNESS 1.2 - Building Signed Production Release APK
 echo ========================================================
+echo.
 
 if exist "%~dp0tools\jdk-17\jdk-17.0.12+7" (
     set "JAVA_HOME=%~dp0tools\jdk-17\jdk-17.0.12+7"
@@ -15,22 +17,18 @@ if exist "%~dp0android-sdk" (
 ) else (
     set "ANDROID_HOME=D:\FITNESS\android-sdk"
 )
-set "PATH=%JAVA_HOME%\bin;%ANDROID_HOME%\platform-tools;%PATH%"
+set "Path=%JAVA_HOME%\bin;%ANDROID_HOME%\platform-tools;%Path%"
 
-echo Building Production Release APK...
-call "%~dp0gradlew.bat" assembleRelease
-
-if %ERRORLEVEL% equ 0 (
+call gradlew.bat assembleRelease
+if %ERRORLEVEL% EQU 0 (
+    copy /Y "%~dp0app\build\outputs\apk\release\app-release.apk" "%~dp0FITNESS-1.2-release.apk" >nul
     echo.
     echo ========================================================
     echo   BUILD SUCCESSFUL!
+    echo   Release APK: %~dp0FITNESS-1.2-release.apk
     echo ========================================================
-    copy /y "%~dp0app\build\outputs\apk\release\app-release.apk" "%~dp0FITNESS-1.0-release.apk" >nul
-    echo Release APK copied to: %~dp0FITNESS-1.0-release.apk
 ) else (
     echo.
-    echo [ERROR] Build failed! Check output above.
+    echo [ERROR] Build failed. Please review errors above.
 )
-
 pause
-

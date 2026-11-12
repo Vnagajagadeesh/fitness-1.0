@@ -40,7 +40,8 @@ class LegacyMigrationManager(
             val rootElement = json.parseToJsonElement(rawJson)
             val rootObj = rootElement.jsonObject
 
-            val isModern = rootObj.containsKey("app") && rootObj["app"]?.jsonPrimitive?.content == "FITNESS 1.0"
+            val appName = rootObj["app"]?.jsonPrimitive?.content ?: ""
+            val isModern = rootObj.containsKey("app") && appName.startsWith("FITNESS")
             val notices = mutableListOf<String>()
 
             if (isModern) {
@@ -52,12 +53,12 @@ class LegacyMigrationManager(
                 val startDate = challengeObj?.get("startDate")?.jsonPrimitive?.content
                 val endDate = challengeObj?.get("endDate")?.jsonPrimitive?.content
 
-                notices.add("Native FITNESS 1.0 backup detected.")
+                notices.add("Native $appName backup detected.")
                 notices.add("All habit check-ins, weight entries, and challenge milestones will be restored.")
 
                 MigrationSummary(
                     isLegacyFormat = false,
-                    detectedSource = "FITNESS 1.0 Native Backup",
+                    detectedSource = "$appName Native Backup",
                     totalHabitsCount = habitsCount,
                     totalLogsCount = logsCount,
                     totalWeightEntries = weightsCount,

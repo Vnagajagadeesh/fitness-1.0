@@ -61,10 +61,14 @@ import com.jd.fitness.ui.theme.TextSubtle
 import com.jd.fitness.ui.theme.TextWhite
 import java.util.Locale
 
+import com.jd.fitness.ui.components.SubScreenHeader
+
 @Composable
 fun StepTrackingScreen(
     viewModel: StepViewModel,
-    healthConnectManager: HealthConnectManager
+    healthConnectManager: HealthConnectManager,
+    onBack: () -> Unit = {},
+    onHome: () -> Unit = {}
 ) {
     val state by viewModel.uiState.collectAsState()
     val progress = (state.todaySteps.toFloat() / state.stepGoal.toFloat()).coerceIn(0f, 1f)
@@ -84,35 +88,16 @@ fun StepTrackingScreen(
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
         item {
-            Spacer(modifier = Modifier.height(16.dp))
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Column {
-                    Text(
-                        text = "AUTOMATIC STEP TRACKING",
-                        fontSize = 20.sp,
-                        fontWeight = FontWeight.Black,
-                        color = TextWhite,
-                        letterSpacing = 1.sp
-                    )
-                    Text(
-                        text = "Android Health Connect & POCO X7 Pro Sensor Sync",
-                        fontSize = 12.sp,
-                        color = TextMuted
-                    )
-                }
-
-                IconButton(onClick = { viewModel.syncStepsFromHealthConnect() }) {
-                    Icon(
-                        imageVector = Icons.Default.Refresh,
-                        contentDescription = "Sync",
-                        tint = NeonElectricBlue
-                    )
-                }
-            }
+            Spacer(modifier = Modifier.height(12.dp))
+            SubScreenHeader(
+                title = "AUTOMATIC STEP TRACKING",
+                subtitle = "Android Health Connect & POCO X7 Pro Sensor Sync",
+                onBack = onBack,
+                onHome = onHome,
+                actionIcon = Icons.Default.Refresh,
+                actionDescription = "Sync",
+                onAction = { viewModel.syncStepsFromHealthConnect() }
+            )
         }
 
         // Hero Card
